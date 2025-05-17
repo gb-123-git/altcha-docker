@@ -29,6 +29,8 @@ const addMinutesToDate = (date: Date, n: number) => {
   const hmacKey = process.env.SECRET as string;
   const expireMinutes = (process.env.EXPIREMINUTES || 10) as number;
   const maxRecords = (process.env.MAXRECORDS || 1000) as number;
+  const maxNumber = (process.env.MAXNUMBER || 1000000) as number;
+  const algo = (process.env.ALGO || "SHA-256") as string;
   const recordCache: string[] = [];
 
   if (hmacKey == "$ecret.key") console.log(" [WARNING] CHANGE ALTCHA SECRET KEY - its still default !!! ");
@@ -38,7 +40,7 @@ const addMinutesToDate = (date: Date, n: number) => {
   });
 
   app.get("/challenge", async (req: Request, res: Response) => {
-    const challenge = await createChallenge({ hmacKey, expires: addMinutesToDate(new Date(), expireMinutes) });
+    const challenge = await createChallenge({ hmacKey, expires: addMinutesToDate(new Date(), expireMinutes), algorithm: algo, maxnumber: maxNumber });
     res.status(200).json(challenge);
   });
 
